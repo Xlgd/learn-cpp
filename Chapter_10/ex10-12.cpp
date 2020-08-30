@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include "util.h"     // Sales_data class.
 
 inline bool compareIsbn(const Sales_data &sd1, const Sales_data &sd2)
 {

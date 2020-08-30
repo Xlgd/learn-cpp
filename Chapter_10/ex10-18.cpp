@@ -1,4 +1,4 @@
-/* 使用 lambda 编写你自己版本的 biggies。*/
+/* 重写 biggies，用 partition 代替 find_if。我们在10.3.1节练习10.13中介绍了 partition 算法。*/
 
 #include <iostream>
 #include <vector>
@@ -16,8 +16,7 @@ void biggies(vector<string>& words, vector<string>::size_type sz) {
 	stable_sort(words.begin(), words.end(), [](const string& a, const string& b)
 		{ return a.size() < b.size(); });
 
-	auto it = find_if(words.begin(), words.end(), [sz](const string& s) { return s.size() >= sz; });
-
+	auto it = partition(words.begin(), words.end(), [sz](const string& s) { return s.size() < sz; });
 	for_each(it, words.end(), [](const string& s) { cout << s << " "; });
 }
 
