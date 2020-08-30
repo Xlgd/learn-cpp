@@ -11,4 +11,5 @@ int main()
     std::vector<int> box = { 1, 2, 1, 2, 3, 4 };
 
     std::cout << "There are " << std::count(box.cbegin(), box.cend(), 1) << " 1 in the box";
+    return 0;
 }

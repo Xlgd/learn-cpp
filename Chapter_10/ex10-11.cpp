@@ -1,4 +1,5 @@
-/* 实现你自己的elimDups。分别在读取输入后、调用unique后以及调用erase后打印vector的内容。*/
+/* 编写程序，使用 stable_sort 和 isShorter 将传递给你的 elimDups 版本的 vector 排序。
+打印 vector的内容，验证你的程序的正确性。*/
 
 #include <iostream>
 #include <vector>
@@ -16,6 +17,11 @@ void elimDups(vector<string>& words) {
 	}
 	words.erase(end_unique, words.end());
 }
+
+bool isShorter(const string& s1, const string& s2) {
+	return s1.size() < s2.size();
+}
+
 int main()
 {	
 	vector<string> box;
@@ -24,6 +30,7 @@ int main()
 		box.push_back(item);
 	}
 	elimDups(box);
+	stable_sort(box.begin(), box.end(), isShorter);
 	for (auto i : box) {
 		cout << i << " ";
 	}

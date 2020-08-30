@@ -12,4 +12,5 @@ int main()
     for (auto i : box) {
         std::cout << i << " ";
     }
+    return 0;
 }

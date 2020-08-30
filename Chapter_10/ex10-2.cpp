@@ -12,4 +12,5 @@ int main()
     std::list<std::string> box = {"abc", "abcd", "abc", "aaa"};
 
     std::cout << "There are " << std::count(box.cbegin(), box.cend(), "abc") << " abc in the box";
+    return 0;
 }
