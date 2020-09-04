@@ -1,5 +1,6 @@
 #include <iostream>
 using namespace std;
+
 template <typename elemType>
 class BinaryTree;
 
@@ -103,7 +104,7 @@ remove_value(const valType& val, BTnode*& prev) {
 			return;
 		}
 		else {
-			remove_value(val, _lchild);
+			_lchild->remove_value(val, _lchild);
 		}
 	}
 	else if (val > _val) {
@@ -111,7 +112,7 @@ remove_value(const valType& val, BTnode*& prev) {
 			return;
 		}
 		else {
-			remove_value(val, _rchild);
+			_rchild->remove_value(val, _rchild);
 		}
 	}
 	else {
