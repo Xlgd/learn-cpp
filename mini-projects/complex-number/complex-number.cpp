@@ -2,7 +2,7 @@
 
 ComplexNumber& ComplexNumber::
 add(const ComplexNumber& rhs) {
-    ComplexNumber* temp = new ComplexNumber(0, 0);
+    ComplexNumber* temp = new ComplexNumber();
     temp->_real = _real + rhs._real;
     temp->_imaginary = _imaginary + rhs._imaginary;
     return *temp;
@@ -10,7 +10,7 @@ add(const ComplexNumber& rhs) {
 
 ComplexNumber& ComplexNumber::
 subtract(const ComplexNumber& rhs) {
-    ComplexNumber* temp = new ComplexNumber(0, 0);
+    ComplexNumber* temp = new ComplexNumber();
     temp->_real = _real - rhs._real;
     temp->_imaginary = _imaginary - rhs._imaginary;
     return *temp;
@@ -18,7 +18,7 @@ subtract(const ComplexNumber& rhs) {
 
 ComplexNumber& ComplexNumber::
 multiply(const ComplexNumber& rhs) {
-    ComplexNumber* temp = new ComplexNumber(0, 0);
+    ComplexNumber* temp = new ComplexNumber();
     temp->_real = _real * rhs._real - _imaginary * rhs._imaginary;
     temp->_imaginary = _real * rhs._imaginary + _imaginary * rhs._real;
     return *temp;
@@ -26,7 +26,7 @@ multiply(const ComplexNumber& rhs) {
 
 ComplexNumber& ComplexNumber::
 divide(const ComplexNumber& rhs) {
-    ComplexNumber* temp = new ComplexNumber(0, 0);
+    ComplexNumber* temp = new ComplexNumber();
     int denominator = rhs._real * rhs._real + rhs._imaginary * rhs._imaginary;
     try {
         if (denominator == 0) {
@@ -50,4 +50,11 @@ ostream& operator<<(ostream& os, const ComplexNumber& rhs) {
     }
     
     return os;
+}
+
+void ComplexNumber::copy(ComplexNumber& tar, const ComplexNumber& src) {
+    ComplexNumber* temp = new ComplexNumber;
+    temp->_real = src._real;
+    temp->_imaginary = src._imaginary;
+    tar = *temp;
 }
