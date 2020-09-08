@@ -17,9 +17,14 @@ public:
     bool empty() { return size() == 0; }
     char* c_str();
     void clear();
+    void insert(int index, const char* val);
+    void insert(int index, const char c);
+    void append(const char* val);
+    void append(const char c);
 
     MyString& operator= (const MyString& src);
     MyString& operator= (const char* src);
+    MyString& operator+= (const MyString& rhs);
     MyString operator+ (const MyString& rhs);
     char& operator[] (int index);
     bool operator== (const MyString& rhs);
