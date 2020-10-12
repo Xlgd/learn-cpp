@@ -9,11 +9,10 @@ int main()
 	cout << testN1;
 	cout << testN2;
 
-	cout << testN1.add(testN2);
-	cout << testN1.subtract(testN2);
-	cout << testN1.multiply(testN2);
-	cout << testN1.divide(testN2);
-
+	cout << testN1 + testN2;
+	cout << testN1 - testN2;
+	cout << testN1 * testN2;
+	cout << testN1 / testN2;
 
 	return 0;
 }

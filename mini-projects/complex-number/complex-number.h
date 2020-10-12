@@ -2,7 +2,7 @@
 using namespace std;
 
 class ComplexNumber {
-    friend ostream& operator<<(ostream& os, const ComplexNumber& rhs);
+    
 public:
     ComplexNumber(): _real(0), _imaginary(0) {}
     ComplexNumber(float real, float imaginary): _real(real), _imaginary(imaginary) {}
@@ -15,7 +15,14 @@ public:
     ComplexNumber& divide(const ComplexNumber& rhs);
     static void copy(ComplexNumber& tar, const ComplexNumber& src);
     
+    friend ostream& operator<<(ostream& os, const ComplexNumber& rhs);
+    friend ComplexNumber operator+(const ComplexNumber& x, const ComplexNumber& y);
+    friend ComplexNumber operator-(const ComplexNumber& x, const ComplexNumber& y);
+    friend ComplexNumber operator*(const ComplexNumber& x, const ComplexNumber& y);
+    friend ComplexNumber operator/(const ComplexNumber& x, const ComplexNumber& y);
+
 private:
     float _real;
     float _imaginary;
 };
+

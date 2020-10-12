@@ -58,3 +58,40 @@ void ComplexNumber::copy(ComplexNumber& tar, const ComplexNumber& src) {
     temp->_imaginary = src._imaginary;
     tar = *temp;
 }
+
+ComplexNumber operator+(const ComplexNumber& x, const ComplexNumber& y) {
+    ComplexNumber* temp = new ComplexNumber();
+    temp->_real = x._real + y._real;
+    temp->_imaginary = x._imaginary + y._imaginary;
+    return *temp;
+}
+
+ComplexNumber operator-(const ComplexNumber& x, const ComplexNumber& y) {
+    ComplexNumber* temp = new ComplexNumber();
+    temp->_real = x._real - y._real;
+    temp->_imaginary = x._imaginary - y._imaginary;
+    return *temp;
+}
+
+ComplexNumber operator*(const ComplexNumber& x, const ComplexNumber& y) {
+    ComplexNumber* temp = new ComplexNumber();
+    temp->_real = x._real * y._real - x._imaginary * y._imaginary;
+    temp->_imaginary = x._real * y._imaginary + x._imaginary * y._real;
+    return *temp;
+}
+
+ComplexNumber operator/(const ComplexNumber& x, const ComplexNumber& y) {
+    ComplexNumber* temp = new ComplexNumber();
+    float denominator = y._real * y._real + y._imaginary * y._imaginary;
+    try {
+        if (denominator == 0) {
+            throw "denominator is zero";
+        }
+        temp->_real = ((x._real * y._real) + (x._imaginary * y._imaginary)) / denominator;
+        temp->_imaginary = ((x._imaginary * y._real) - (x._real * y._imaginary)) / denominator;
+    }
+    catch (...) {
+        cout << "Exception occured" << endl;
+    }
+    return *temp;
+}
