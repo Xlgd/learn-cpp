@@ -1,19 +1,29 @@
-#ifndef __COMPLEX__
-#define __COMPLEX__
+#ifndef __COMPLEX_NUMBER__
+#define __COMPLEX_NUMBER__
 
 #include <iostream>
 using namespace std;
 
 template<typename T>
-class ComplexNumber {
-    
+class ComplexNumber { 
 public:
-    ComplexNumber(T real = 0, T imaginary = 0): _real(real), _imaginary(imaginary) {}
-    ComplexNumber(const ComplexNumber& rhs) : _real(rhs._real), _imaginary(rhs._imaginary) {}
-    inline T real() const{ return _real; }
-    inline T imaginary() const{ return _imaginary; }
-    inline ComplexNumber<T>& operator+=(const ComplexNumber<T>& rhs);
-    inline ComplexNumber<T>& operator+=(const T x);
+    ComplexNumber(): _real(0), _imaginary(0) {}
+    ComplexNumber(const T& real, const T& imaginary = 0): _real(real), _imaginary(imaginary) {}
+    ComplexNumber(const ComplexNumber<T>& other) : _real(other.real()), _imaginary(other.imaginary()) {}
+    ComplexNumber<T>& operator=(const T& x);
+    ComplexNumber<T>& operator=(const ComplexNumber<T>& cx);
+    T real() const { return _real; }
+    void real(T value) { this->_real = value; }
+    T imaginary() const{ return _imaginary; }
+    void imaginary(T value) { this->_imaginary = value; }
+    ComplexNumber<T>& operator+=(const ComplexNumber<T>& other);
+    ComplexNumber<T>& operator+=(const T& other);
+    ComplexNumber<T>& operator-=(const ComplexNumber<T>& other);
+    ComplexNumber<T>& operator-=(const T& other);
+    ComplexNumber<T>& operator*=(const ComplexNumber<T>& other);
+    ComplexNumber<T>& operator*=(const T& other);
+    ComplexNumber<T>& operator/=(const ComplexNumber<T>& other);
+    ComplexNumber<T>& operator/=(const T& other);
     static void copy(ComplexNumber& tar, const ComplexNumber& src);
     
     
@@ -22,6 +32,20 @@ private:
     T _real;
     T _imaginary;
 };
+
+template<typename T>
+ComplexNumber<T>& ComplexNumber<T>::operator=(const T& x) {
+    this->_real = x;
+    this->_imaginary = 0;
+    return *this;
+}
+
+template<typename T>
+ComplexNumber<T>& ComplexNumber<T>::operator=(const ComplexNumber<T>& cx) {
+    this->_real  = cx.real();
+    this->_imaginary = cx.imaginary();
+    return *this;
+}
 
 template<typename T>
 ostream& operator<< (ostream& os, const ComplexNumber<T>& rhs) {
@@ -43,14 +67,37 @@ void ComplexNumber<T>::copy(ComplexNumber<T>& tar, const ComplexNumber<T>& src) 
     tar = *temp;
 }
 template<typename T>
-inline ComplexNumber<T>& ComplexNumber<T>::operator+= (const ComplexNumber<T>& rhs) {
-    this->_real += rhs.real();
-    this->_imaginary += rhs.imaginary();
+ComplexNumber<T>& ComplexNumber<T>::operator+= (const ComplexNumber<T>& other) {
+    this->_real += other.real();
+    this->_imaginary += other.imaginary();
     return *this;
 }
 template<typename T>
-inline ComplexNumber<T>& ComplexNumber<T>::operator+= (const T x) {
-    this->_real += x;
+ComplexNumber<T>& ComplexNumber<T>::operator+= (const T& other) {
+    this->_real += other;
+    return *this;
+}
+template<typename T>
+ComplexNumber<T>& ComplexNumber<T>::operator-= (const ComplexNumber<T>& other) {
+    this->_real -= other.real();
+    this->_imaginary -= other.imaginary();
+    return *this;
+}
+template<typename T>
+ComplexNumber<T>& ComplexNumber<T>::operator-= (const T& other) {
+    this->_real -= other;
+    return *this;
+}
+template<typename T>
+ComplexNumber<T>& ComplexNumber<T>::operator*= (const ComplexNumber<T>& other) {
+    this->_real = this->real() * other.real() - this->imaginary() * other.imaginary();
+    this->_imaginary = this->real() * other.imaginary() + this->imaginary() * other.real();
+    return *this;
+}
+template<typename T>
+ComplexNumber<T>& ComplexNumber<T>::operator*= (const T& other) {
+    this->_real = this->real() * other;
+    this->_imaginary = this->imaginary() * other;
     return *this;
 }
 
