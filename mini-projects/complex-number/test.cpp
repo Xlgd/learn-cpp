@@ -19,7 +19,8 @@ int main()
 	cout << ComplexNumber<int>(4, 5);
 	testN2 += 3;
 	testN2 *= 2;
-	testN2 *= 0.5;
+	testN2 /= 2;
+	testN2 -= 3;
 	cout << testN2;
 	testN2 = -testN1;
 	cout << testN2;
