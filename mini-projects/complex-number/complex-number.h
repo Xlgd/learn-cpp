@@ -129,12 +129,27 @@ template<typename T>
 ComplexNumber<T> operator- (const ComplexNumber<T>& x, const ComplexNumber<T>& y) {
     return ComplexNumber<T>(x.real() - y.real(), x.imaginary() - y.imaginary());
 }
-
+template<typename T>
+ComplexNumber<T> operator- (const ComplexNumber<T>& x, const T& y) {
+    return ComplexNumber<T>(x.real() - y, x.imaginary());
+}
+template<typename T>
+ComplexNumber<T> operator- (const T& x, const ComplexNumber<T> & y) {
+    return ComplexNumber<T>(x - y.real(), 0 - y.imaginary());
+}
 
 template<typename T>
 ComplexNumber<T> operator* (const ComplexNumber<T>& x, const ComplexNumber<T>& y) { 
     return ComplexNumber<T>(x.real() * y.real() - x.imaginary() * y.imaginary(),
                         x.real() * y.imaginary() + x.imaginary() * y.real());
+}
+template<typename T>
+ComplexNumber<T> operator* (const ComplexNumber<T>& x, const T& y) {
+    return ComplexNumber<T>(x.real() * y, x.imaginary() * y);
+}
+template<typename T>
+ComplexNumber<T> operator* (const T& x, const ComplexNumber<T> & y) {
+    return ComplexNumber<T>(x * y.real(), x * y.imaginary());
 }
 
 template<typename T>
@@ -147,6 +162,21 @@ ComplexNumber<T> operator/ (const ComplexNumber<T>& x, const ComplexNumber<T>& y
     }
     return ComplexNumber<T>(((x.real() * y_real) + (x.imaginary() * y_imaginary)) / denominator, 
                          ((x.imaginary() * y_real) - (x.real() * y_imaginary)) / denominator);
+}
+template<typename T>
+ComplexNumber<T> operator/ (const ComplexNumber<T>& x, const T& y) {
+    return ComplexNumber<T>(x.real() / y, x.imaginary() / y);
+}
+template<typename T>
+ComplexNumber<T> operator/ (const T& x, const ComplexNumber<T> & y) {
+    T y_real = y.real();
+    T y_imaginary = y.imaginary();
+    T denominator = y_real * y_real + y_imaginary * y_imaginary;
+    if (denominator == 0) {
+        throw "denominator is zero";
+    }
+    return ComplexNumber<T>(((x * y_real) + (0 * y_imaginary)) / denominator, 
+                         ((0 * y_real) - (x * y_imaginary)) / denominator);
 }
 
 template<typename T>

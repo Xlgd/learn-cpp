@@ -13,8 +13,12 @@ int main()
 
 	testN2 = testN1 + 5;
 	testN2 = 7 + testN1;
+	testN2 = testN2 - 7;
+	testN2 = 10 - testN2;
 	testN2 = testN1 + testN2;
 	testN2 += testN1;
+	testN2 = testN2 * 2;
+	testN2 = 1 * testN2;
 	cout << testN2;
 	cout << ComplexNumber<int>(4, 5);
 	testN2 += 3;
@@ -37,6 +41,7 @@ int main()
 	testN3.real(1);
 	testN3.imaginary(1);
 	cout << testN3;
-
+	cout << 2.0f / ComplexNumber<float>(2, 1);
+	cout << ComplexNumber<float>(2, 1) / 2.0f;
 	return 0;
 }
