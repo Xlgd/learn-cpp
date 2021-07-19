@@ -42,6 +42,11 @@ int main()
 	testN3.imaginary(1);
 	cout << testN3;
 	cout << 2.0f / ComplexNumber<float>(2, 1);
-	cout << ComplexNumber<float>(2, 1) / 2.0f;
+	cout << ComplexNumber<float>(2, 1) / 2.0f << endl;
+	cout << real(testN3) << " " << imaginary(testN3) << endl;
+	cout << abs(ComplexNumber<double>(1, 1)) << endl;
+	cout << norm(ComplexNumber<double>(1, 1)) << endl;
+	cout << arg(ComplexNumber<double>(0, 1)) << endl;
+	cout << conj(ComplexNumber<double>(1, 1)) << endl;
 	return 0;
 }

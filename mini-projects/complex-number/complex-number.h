@@ -2,6 +2,7 @@
 #define __COMPLEX_NUMBER__
 
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 template<typename T>
@@ -24,7 +25,6 @@ public:
     ComplexNumber<T>& operator*=(const T& other);
     ComplexNumber<T>& operator/=(const ComplexNumber<T>& other);
     ComplexNumber<T>& operator/=(const T& other);
-    static void copy(ComplexNumber& tar, const ComplexNumber& src);
 
 private:
     T _real;
@@ -184,11 +184,11 @@ bool operator== (const ComplexNumber<T>& x, const ComplexNumber<T>& y) {
     return (x.real() == y.real()) && (x.imaginary() == y.imaginary());
 }
 template<typename T>
-bool operator== (const ComplexNumber<T>& x, const T y) {
+bool operator== (const ComplexNumber<T>& x, const T& y) {
     return (x.real() == y) && (x.imaginary() == 0);
 }
 template<typename T>
-bool operator== (const T x, const ComplexNumber<T>& y) {
+bool operator== (const T& x, const ComplexNumber<T>& y) {
     return (x == y.real()) && (y.imaginary() == 0);
 }
 
@@ -197,35 +197,48 @@ bool operator!= (const ComplexNumber<T>& x, const ComplexNumber<T>& y) {
     return !(x == y);
 }
 template<typename T>
-bool operator!= (const ComplexNumber<T>& x, const T y) {
+bool operator!= (const ComplexNumber<T>& x, const T& y) {
     return !(x == y);
 }
 template<typename T>
-bool operator!= (const T x, const ComplexNumber<T>& y) {
+bool operator!= (const T& x, const ComplexNumber<T>& y) {
     return !(x == y);
-}
-
-template<typename T>
-ComplexNumber<T> conj(const ComplexNumber<T>& x) {
-    return ComplexNumber<T>(x.real(), -x.imaginary());
 }
 
 template<typename T>
 ostream& operator<< (ostream& os, const ComplexNumber<T>& rhs) {
-    if (rhs.imaginary() < 0) {
-        os << rhs.real() << rhs.imaginary() << "i" << endl;
-    }
-    else {
-        os << rhs.real() << "+" << rhs.imaginary() << "i" << endl;
-    }
-    
+    os << "(" << rhs.real() << "," << rhs.imaginary() << ")";
     return os;
 }
+
 template<typename T>
-void ComplexNumber<T>::copy(ComplexNumber<T>& tar, const ComplexNumber<T>& src) {
-    ComplexNumber* temp = new ComplexNumber;
-    temp->_real = src.real();
-    temp->_imaginary = src.imaginary();
-    tar = *temp;
+T real(const ComplexNumber<T>& z) {
+    return z.real();
 }
+
+template<typename T>
+T imaginary(const ComplexNumber<T>& z) {
+    return z.imaginary();
+}
+
+template<typename T>
+T abs(const ComplexNumber<T>& z) {
+    return sqrt(z.real() * z.real() + z.imaginary() * z.imaginary());
+}
+
+template<typename T>
+T arg(const ComplexNumber<T>& z) {
+    return atan(z.imaginary() / z.real());
+}
+
+template<typename T>
+T norm(const ComplexNumber<T>& z) {
+    return z.real() * z.real() + z.imaginary() * z.imaginary();
+}
+
+template<typename T>
+ComplexNumber<T> conj(const ComplexNumber<T>& z) {
+    return ComplexNumber<T>(z.real(), -z.imaginary());
+}
+
 #endif
