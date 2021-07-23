@@ -1,5 +1,5 @@
 #include <iostream>
-#include "mystring.h"
+#include "../mini_stl/string.h"
 using namespace std;
 
 int main()

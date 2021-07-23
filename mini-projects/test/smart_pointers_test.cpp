@@ -1,5 +1,5 @@
 #include <iostream>
-#include "mypointers.h"
+#include "../mini_stl/smart_pointers.h"
 using namespace std;
 
 int main() {
