@@ -1,36 +1,35 @@
-#ifndef __MYSTRING__
-#define __MYSTRING__
+#ifndef __STRING__
+#define __STRING__
 
 #include <iostream>
 #include <cstring>
 
-using namespace std;
-
-class MyString {
-    friend ostream& operator<< (ostream& os, const MyString& val);
-   
+namespace ministl {
+class string {
+ 
 public:
-    MyString();
-    MyString(const char* val);
-    MyString(const MyString& rhs);
-    MyString(int n, char c);
-    ~MyString();
+    string(): _str(nullptr), _size(0) {}
+    string(const char* val);
+    string(const string& rhs);
+    string(int n, char c);
+    ~string();
 
     int size() const;
     bool empty() { return size() == 0; }
-    char* c_str();
+    const char* c_str() const;
     void clear();
     void insert(int index, const char* val);
     void insert(int index, const char c);
     void append(const char* val);
     void append(const char c);
 
-    MyString& operator= (const MyString& src);
-    MyString& operator= (const char* src);
-    MyString& operator+= (const MyString& rhs);
-    MyString operator+ (const MyString& rhs);
+    string& operator= (const string& src);
+    string& operator= (const char* src);
+    string& operator+= (const string& rhs);
+    string operator+ (const string& rhs);
     char& operator[] (int index);
-    bool operator== (const MyString& rhs);
+    bool operator== (const string& rhs);
+
 
     class Iterator {
     public:
@@ -57,14 +56,12 @@ public:
     
 private:
     char* _str;
+    int _size;
+    int _capacity;
 };
 
-MyString::MyString() {
-    _str = new char[1];
-    _str[0] = '\0';
-}
 
-MyString::MyString(const char* val) {
+string::string(const char* val) {
     if (val == nullptr) {
         _str = new char[1];
         _str[0] = '\0';
@@ -74,34 +71,32 @@ MyString::MyString(const char* val) {
     strcpy(_str, val);
 }
 
-MyString::MyString(const MyString& rhs) {
+string::string(const string& rhs) {
     int len = rhs.size();
     _str = new char[len + 1];
     strcpy(_str, rhs._str);
 }
 
-MyString::MyString(int n, char c) {
-    _str = new char[n + 1];
-    int i = 0;
-    for (;i < n; ++i) {
-        _str[i] = c;
+string::string(int count, char ch) {
+    _str = new char[2 * count];
+    for (int i = 0; i < count; ++i) {
+        _str[i] = ch;
     }
-    _str[i] = '\0';
+    _size = count;
+    _capacity = 2 * count;
 }
-MyString::~MyString() {
+string::~string() {
     delete[] _str;
 }
 
 
-int MyString::size() const {
+int string::size() const {
     return strlen(_str);
 }
-char* MyString::c_str() {
-    char* temp = new char[size() + 1];
-    strcpy(temp, _str);
-    return temp;
+const char* string::c_str() const {
+    return _str;
 }
-void MyString::clear() {
+void string::clear() {
     if (!empty()) {
         delete _str;
         _str = nullptr;
@@ -109,7 +104,7 @@ void MyString::clear() {
         _str[0] = '\0';
     }
 }
-void MyString::insert(int index, const char c) {
+void string::insert(int index, const char c) {
     if (index < 0 || index > size()) {
         return ;
     }
@@ -132,7 +127,7 @@ void MyString::insert(int index, const char c) {
     _str = nullptr;
     _str = temp;
 }
-void MyString::insert(int index, const char* val) {
+void string::insert(int index, const char* val) {
     if (index < 0 || index > size()) {
         return ;
     }
@@ -156,7 +151,7 @@ void MyString::insert(int index, const char* val) {
     _str = nullptr;
     _str = temp;
 }
-void MyString::append(const char* val) {
+void string::append(const char* val) {
     if (val == nullptr) {
         return;
     }
@@ -170,7 +165,7 @@ void MyString::append(const char* val) {
     _str = nullptr;
     _str = temp;
 }
-void MyString::append(const char c) {
+void string::append(const char c) {
     if (c == '\0') {
         return;
     }
@@ -186,18 +181,18 @@ void MyString::append(const char c) {
 
 
 
-MyString& MyString::operator= (const MyString& src) {
+string& string::operator= (const string& src) {
     if (this != &src) {
         int srcLen = src.size();
         if (size() != srcLen) {
             delete[] _str;
             _str = new char[srcLen + 1];
         }
-        copy(src._str, src._str + srcLen, _str);
+        std::copy(src._str, src._str + srcLen, _str);
     }
     return *this;
 }
-MyString& MyString::operator= (const char* src) {
+string& string::operator= (const char* src) {
     int srcLen = strlen(src);
     if (size() != srcLen) {
         delete _str;
@@ -207,7 +202,7 @@ MyString& MyString::operator= (const char* src) {
     strcpy(_str, src);
     return *this;
 }
-MyString& MyString::operator+= (const MyString& rhs) {
+string& string::operator+= (const string& rhs) {
     int rhsLen = rhs.size();
     int thisLen = size();
     char* strTemp = new char[rhsLen + thisLen + 1];
@@ -219,33 +214,34 @@ MyString& MyString::operator+= (const MyString& rhs) {
     _str = strTemp;
     return *this;
 }
-MyString MyString::operator+ (const MyString& rhs) {
+string string::operator+ (const string& rhs) {
     int rhsLen = rhs.size();
     int thisLen = size();
     char* strTemp = new char[rhsLen + thisLen + 1];
     strncpy(strTemp, _str, thisLen);
     strncpy(strTemp + thisLen, rhs._str, rhsLen);
     strTemp[rhsLen + thisLen] = '\0';
-    MyString Temp(strTemp);
+    string Temp(strTemp);
     return Temp;
 }
-bool MyString::operator== (const MyString& rhs) {
+bool string::operator== (const string& rhs) {
     return (strcmp(_str, rhs._str) == 0);
 }
-char& MyString::operator[] (int index) {
+char& string::operator[] (int index) {
     try {
         if (index > size() - 1 || index < 0) {
             throw "index is out of range";
         }  
     }
     catch(...) {
-        cout << "Exception occured" << endl;
+        std::cout << "Exception occured" << std::endl;
     }
     return _str[index];
 }
-ostream& operator<< (ostream& os, const MyString& val) {
-    os << val._str;
+std::ostream& operator<< (std::ostream& os, const string& val) {
+    os << val.c_str();
     return os;
 }
 
+} // namespace ministl
 #endif

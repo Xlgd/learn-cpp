@@ -4,8 +4,8 @@ using namespace std;
 
 int main()
 {
-	MyString testS("hello");
-	MyString testS2;
+	ministl::string testS("hello");
+	ministl::string testS2;
 	if (testS == testS2) {
 		cout << "true";
 	}
