@@ -4,32 +4,14 @@ using namespace std;
 
 int main()
 {
-	ministl::string testS("hello");
-	ministl::string testS2;
-	if (testS == testS2) {
-		cout << "true";
-	}
-	else {
-		cout << "false";
-	}
-	cout << endl;
-
-	testS2 = "world";
-	testS += testS2;
-	cout << testS << endl;
-	cout << "testS size: " << testS.size() << endl;
-	
-	for (auto i = testS.begin(); i != testS.end(); ++i) {
-		cout << *i << " ";
-	}
-	cout << endl;
-
-	for (int i = 0; i < testS.size(); ++i) {
-		cout << testS[i] << " ";
-	}
-	cout << endl;
-
-	testS.insert(5, "world");
-	cout << testS << endl;
+	ministl::string s1("hello");
+	ministl::string s2;		
+	ministl::string s3(3, 'a');
+	cout << s1 << endl;
+	cout << s3 << endl;
+	s1 = s3;
+	cout << s1 << endl;
+	s2 = move(s1);
+	cout << s3 << endl;
 	return 0;
 }

@@ -1,99 +1,114 @@
-#ifndef __STRING__
-#define __STRING__
+#ifndef __MINI_STRING__
+#define __MINI_STRING__
 
 #include <iostream>
 #include <cstring>
+#include "allocator.h"
 
 namespace ministl {
+
+#define STRING_INIT_SIZE 32
+
 class string {
- 
+
 public:
-    string(): _str(nullptr), _size(0) {}
-    string(const char* val);
-    string(const string& rhs);
-    string(int n, char c);
+    typedef ministl::allocator<char>            allocator;
+    typedef typename allocator::value_type      value_type;
+    typedef typename allocator::size_type       size_type;
+    typedef typename allocator::pointer         pointer;
+    typedef typename allocator::const_pointer   const_pointer;
+    typedef typename allocator::reference       reference;
+    typedef typename allocator::const_reference const_reference;
+    typedef value_type*                         iterator;
+
+    string();
+    string(const_pointer val);
+    string(const string& val);
+    string(string&& val);
+    string(size_type n, value_type ch);
     ~string();
 
     int size() const;
     bool empty() { return size() == 0; }
-    const char* c_str() const;
+    const_pointer c_str() const;
     void clear();
     void insert(int index, const char* val);
     void insert(int index, const char c);
     void append(const char* val);
     void append(const char c);
 
-    string& operator= (const string& src);
-    string& operator= (const char* src);
+    string& operator= (const string& rhs);
+    string& operator= (const char* rhs);
+    string& operator= (string&& rhs);
     string& operator+= (const string& rhs);
     string operator+ (const string& rhs);
     char& operator[] (int index);
     bool operator== (const string& rhs);
-
-
-    class Iterator {
-    public:
-        Iterator(char* ptr): _ptr(ptr) {};
-        Iterator operator++ () {
-            Iterator temp = *this;
-            _ptr++;
-            return temp;
-        }
-        Iterator operator++ (int) {
-            _ptr++;
-            return *this;
-        }
-        char& operator* () { return *_ptr; }
-        bool operator== (const Iterator& rhs) { return _ptr == rhs._ptr; }
-        bool operator!= (const Iterator& rhs) { return _ptr != rhs._ptr; }
-
-    private:
-        char* _ptr;
-    };
-
-    Iterator begin() { return Iterator(_str); }
-    Iterator end() { return Iterator(_str + size()); }
-    
+ 
 private:
-    char* _str;
-    int _size;
-    int _capacity;
+    iterator _str;
+    size_type _size;
+    size_type _capacity;
 };
 
+// constructor, destructor
+string::string() {
+    _str = allocator::allocate(static_cast<size_type>(STRING_INIT_SIZE));
+    std::cout << "allocate " << STRING_INIT_SIZE << std::endl; 
+    _size = 0;
+    _capacity = STRING_INIT_SIZE;
+}
 
-string::string(const char* val) {
-    if (val == nullptr) {
-        _str = new char[1];
-        _str[0] = '\0';
-    }
-    int len = strlen(val);
-    _str = new char[len + 1];
+string::string(const_pointer val): _str(nullptr), _size(0), _capacity(0) {
+    size_type length = strlen(val);
+    _str = allocator::allocate(length + 1);
+    std::cout << "allocate " << length + 1 << std::endl;
     strcpy(_str, val);
+    _size = length;
+    _capacity = length + 1;
 }
 
-string::string(const string& rhs) {
-    int len = rhs.size();
-    _str = new char[len + 1];
-    strcpy(_str, rhs._str);
+string::string(const string& val): _str(nullptr), _size(0), _capacity(0) {
+    _str = allocator::allocate(val.size() + 1);
+    std::cout << "allocate " << val.size() + 1 << std::endl;
+    strcpy(_str, val._str);
+    _size = val.size();
+    _capacity = val.size() + 1;
 }
 
-string::string(int count, char ch) {
-    _str = new char[2 * count];
-    for (int i = 0; i < count; ++i) {
+string::string(string&& val): _str(val._str), _size(val._size), _capacity(val._capacity) {
+    val._str = nullptr;
+    val._size = 0;
+    val._capacity = 0;
+}
+
+string::string(size_type count, value_type ch): _str(nullptr), _size(0), _capacity(0){
+    _str = allocator::allocate(count + 1);
+    std::cout << "allocate " << count + 1 << std::endl;
+    int i = 0;
+    for (; i < count; ++i) {
         _str[i] = ch;
     }
+    _str[i] = '\0';
     _size = count;
-    _capacity = 2 * count;
+    _capacity = count + 1;
 }
+
 string::~string() {
-    delete[] _str;
+    if (_str != nullptr) {
+        allocator::deallocate(_str, _capacity);
+        std::cout << "deallocate " << _capacity << std::endl;
+        _str = nullptr;
+        _size = 0;
+        _capacity = 0;
+    }
 }
 
 
 int string::size() const {
-    return strlen(_str);
+    return _size;
 }
-const char* string::c_str() const {
+string::const_pointer string::c_str() const {
     return _str;
 }
 void string::clear() {
@@ -181,17 +196,31 @@ void string::append(const char c) {
 
 
 
-string& string::operator= (const string& src) {
-    if (this != &src) {
-        int srcLen = src.size();
-        if (size() != srcLen) {
-            delete[] _str;
-            _str = new char[srcLen + 1];
-        }
-        std::copy(src._str, src._str + srcLen, _str);
+string& string::operator=(const string& rhs) {
+    if (this != &rhs) {
+        allocator::deallocate(_str, _capacity);
+        std::cout << "deallocate " << _capacity << std::endl;
+        _str = allocator::allocate(rhs._capacity);
+        std::cout << "allocate " << rhs._capacity << std::endl;
+        strcpy(_str, rhs._str);
+        _size = rhs._size;
+        _capacity = rhs._capacity;
     }
     return *this;
 }
+
+string& string::operator=(string&& rhs) {
+    allocator::deallocate(_str, _capacity);
+    std::cout << "deallocate " << _capacity << std::endl;
+    _str = rhs._str;
+    _size = rhs._size;
+    _capacity = rhs._capacity;
+    rhs._str = nullptr;
+    rhs._size = 0;
+    rhs._capacity = 0;
+    return *this;
+}
+
 string& string::operator= (const char* src) {
     int srcLen = strlen(src);
     if (size() != srcLen) {
