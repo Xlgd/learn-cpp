@@ -21,25 +21,30 @@ public:
     typedef typename allocator::const_reference const_reference;
     typedef value_type*                         iterator;
 
+    static const size_type npos = -1;
+
     string();
+    string(const string& val, size_type pos, size_type count = npos);
     string(const_pointer val);
     string(const string& val);
     string(string&& val);
     string(size_type n, value_type ch);
     ~string();
 
-    int size() const;
-    bool empty() { return size() == 0; }
+    size_type size() const;
+    size_type length() const;
+    bool empty() const { return size() == 0; }
     const_pointer c_str() const;
     void clear();
-    void insert(int index, const char* val);
+    string& insert(size_type index, const_pointer s);
     void insert(int index, const char c);
     void append(const char* val);
     void append(const char c);
 
-    string& operator= (const string& rhs);
-    string& operator= (const char* rhs);
-    string& operator= (string&& rhs);
+    string& operator=(const string& rhs);
+    string& operator=(const_pointer s);
+    string& operator=(string&& rhs);
+    string& operator=(std::nullptr_t) = delete;
     string& operator+= (const string& rhs);
     string operator+ (const string& rhs);
     char& operator[] (int index);
@@ -58,6 +63,27 @@ string::string() {
     _size = 0;
     _capacity = STRING_INIT_SIZE;
 }
+
+string::string(const string& val, size_type pos, size_type count)
+    : _str(nullptr), _size(0), _capacity(0) {
+    size_type length = val.size();
+    if (count == npos || pos + count >= length) {
+        _str = allocator::allocate(length - pos + 1);
+        std::cout << "allocate " << length - pos + 1 << std::endl;
+        _size = length - pos;
+        _capacity = length - pos + 1;
+        strcpy(_str, val._str + pos);
+    }
+    else {
+        _str = allocator::allocate(count + 1);
+        std::cout << "allocate " << count + 1 << std::endl;
+        _size = count;
+        _capacity = count + 1;
+        strncpy(_str, val._str + pos, count);
+        _str[count] = '\0';
+    }
+}
+
 
 string::string(const_pointer val): _str(nullptr), _size(0), _capacity(0) {
     size_type length = strlen(val);
@@ -105,18 +131,20 @@ string::~string() {
 }
 
 
-int string::size() const {
+string::size_type string::size() const {
     return _size;
 }
+string::size_type string::length() const {
+    return this->size();
+}
+
 string::const_pointer string::c_str() const {
     return _str;
 }
 void string::clear() {
-    if (!empty()) {
-        delete _str;
-        _str = nullptr;
-        _str = new char[1];
+    if (!this->empty()) {
         _str[0] = '\0';
+        _size = 0;
     }
 }
 void string::insert(int index, const char c) {
@@ -142,29 +170,8 @@ void string::insert(int index, const char c) {
     _str = nullptr;
     _str = temp;
 }
-void string::insert(int index, const char* val) {
-    if (index < 0 || index > size()) {
-        return ;
-    }
-    else if (index == size()) {
-        append(val);
-        return;
-    }
-    int thisLen =  size();
-    int valLen = strlen(val);
-    char* temp = new char[thisLen + valLen + 1];
-    strncpy(temp, _str, index);
-    strncpy(temp + index, val, valLen);
-    if (index == 0) {
-        strncpy(temp + valLen + index, _str, thisLen);
-    }
-    else {
-        strncpy(temp + valLen + index, _str + index, thisLen - index);
-    }
-    temp[thisLen + valLen] = '\0';
-    delete _str;
-    _str = nullptr;
-    _str = temp;
+string& string::insert(size_type index, const_pointer s) {
+    return *this; 
 }
 void string::append(const char* val) {
     if (val == nullptr) {
@@ -221,16 +228,18 @@ string& string::operator=(string&& rhs) {
     return *this;
 }
 
-string& string::operator= (const char* src) {
-    int srcLen = strlen(src);
-    if (size() != srcLen) {
-        delete _str;
-        _str = nullptr;
-        _str = new char[srcLen + 1];
-    }
-    strcpy(_str, src);
+string& string::operator=(const_pointer s) {
+    allocator::deallocate(_str, _capacity);
+    std::cout << "deallocate " << _capacity << std::endl;
+    size_type length = strlen(s);
+    _str = allocator::allocate(length + 1);
+    std::cout << "allocate " << length + 1 << std::endl;
+    strcpy(_str, s);
+    _size = length;
+    _capacity = length + 1;
     return *this;
 }
+
 string& string::operator+= (const string& rhs) {
     int rhsLen = rhs.size();
     int thisLen = size();
