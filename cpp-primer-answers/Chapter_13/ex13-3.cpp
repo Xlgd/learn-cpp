@@ -1,0 +1,1 @@
+/* 拷贝StrBlob会使shared_ptr的引用计数加1，拷贝StrBlobPtr时，引用计数不变化。*/
